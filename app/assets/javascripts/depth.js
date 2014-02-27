@@ -11,7 +11,7 @@ var RenderDepth = function(){
 	this.buy_data_array = []
 
 	this.data = $.ajax({
-		url: '/',
+		url: '/depth',
 		dataType: 'json',
 		success: function(d){
 			console.log(d)
@@ -79,15 +79,18 @@ var RenderDepth = function(){
 
 		var y_max = _.max(self.sell_data_array.concat(self.buy_data_array), function(order){return order.y}).y
 
-		var x = d3.scale.linear().domain([x_min, x_max]).range([0, width])
-		var y = d3.scale.linear().domain([0, y_max]).range([height, 0])
+		var x = d3.scale.linear()
+			.domain([x_min, x_max])
+			.range([0, width])
 
+		var y = d3.scale.linear()
+			.domain([0, y_max])
+			.range([height, 0])
 
-		graph = d3.select('body').append('svg:svg')
+		var graph = d3.select('body').append('svg:svg')
 			.attr('width', width + 100)
 			.attr('height', height + 100)
-
-		var g = graph.append("svg:g")	
+			.append("svg:g")	
 
 		var line = d3.svg.line()
 			.x(function(d){return x(d.x)})
@@ -96,7 +99,7 @@ var RenderDepth = function(){
 		var xAxis = d3.svg.axis().scale(x).tickSize(height).tickSubdivide(true);
 
 		var yAxisLeft = d3.svg.axis().scale(y).ticks(5).orient("right");
-		
+	
 		graph.append("svg:g")
 			.attr("class", "x axis")
 			// .attr("transform", "translate(0," + 300 + ")")
@@ -180,6 +183,6 @@ var RenderDepth = function(){
 // 	}
 // }
 
-$(document).ready(function(){
-	test = new RenderDepth();
-})
+// $(document).ready(function(){
+// 	test = new RenderDepth();
+// })

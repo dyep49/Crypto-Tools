@@ -2,7 +2,7 @@ require 'cryptsy/api'
 
 class HomeController < ApplicationController
 
-	def index
+	def depth
 		cryptsy = Cryptsy::API::Client.new(ENV["CRYPTSY_PUBLIC_KEY"], ENV["CRYPTSY_PRIVATE_KEY"])
 		respond_to do |format|
 			format.html
@@ -11,6 +11,18 @@ class HomeController < ApplicationController
 				# response = cryptsy.depth(params["pairId"].to_i)
 				response = cryptsy.depth(135)
 				# binding.pry
+				parsed_response = response["return"]
+				render json: parsed_response.to_json
+			end
+		end
+	end
+
+	def index
+		cryptsy = Cryptsy::API::Client.new(ENV["CRYPTSY_PUBLIC_KEY"], ENV["CRYPTSY_PRIVATE_KEY"])
+		respond_to do |format|
+			format.html
+			format.json do 
+				response = cryptsy.markettrades(135)
 				parsed_response = response["return"]
 				render json: parsed_response.to_json
 			end
