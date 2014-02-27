@@ -1,20 +1,35 @@
+Date.prototype.addHours = function(h){
+    this.setHours(this.getHours()+h);
+    return this;
+}
+
 var Trade = function(time, price){
 	this.datetime = time
 	this.price = price
 }
 
-var CandleStick = function(time, open, close, min){
-	this.datetime = time
+var CandleStick = function(open_time, open, close, min, max){
+	this.open_datetime = open_time
+	// this.close_datetime = close_time
 	this.open = open
 	this.close = close
 	this.min = min
 	this.max = max
 }
 
+function roundTime(date) {
+    date.setHours(date.getHours() + Math.floor(date.getMinutes()/60));
+    date.setMinutes(0);
+    date.setSeconds(date.getSeconds() + Math.floor(date.getSeconds()/60));
+    date.setSeconds(0);
+    return date;
+}
+
 var RenderHistory = function(){
 	var self = this
 
 	this.trade_history = []
+	this.candlestick_history = []
 
 	this.fetchTrades = function(){
 		$.ajax({
@@ -22,8 +37,8 @@ var RenderHistory = function(){
 		dataType: 'json',
 		success: function(d){
 			self.populate_line_array(d)
-			self.populate_candlestick_array(self.trade_history)
 			self.renderGraph()
+			self.populate_candlestick_array(self.trade_history)
 		}
 		})
 	}
@@ -35,7 +50,19 @@ var RenderHistory = function(){
 		})
 	}
 
-	this.populate_candlestick_array
+	this.populate_candlestick_array = function(data){
+		var grouped_history = _.groupBy(data, function(n){return roundTime(n.datetime)})
+		
+		_.each(grouped_history, function(trades){
+			var min = _.min(trades, function(trade){return trade.price}).price
+			var max = _.max(trades, function(trade){return trade.price}).price
+			var open = trades[0].price
+			var close = _.last(trades).price
+			var open_time = roundTime(trades[0].datetime)
+			// var close_time = open_time.addHours(1)
+			self.candlestick_history.push(new CandleStick(open_time, open, close, min, max))
+		})
+	}
 
 	this.renderGraph = function(){
 		var width = 1000
@@ -89,6 +116,15 @@ var RenderHistory = function(){
 		svg.append("svg:path")
 			.attr("id", "green")
 			.attr("d", line(self.trade_history))
+
+	svg.append("rect")
+  .attr("x", 0)
+  .attr("y", 0)
+  .attr("height", height)
+  .attr("width", width)
+  .style("stroke", 'black')
+  .style("fill", "none")
+  .style("stroke-width", 1);
 	}
 }
 
