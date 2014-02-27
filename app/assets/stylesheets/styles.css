@@ -1,0 +1,34 @@
+/* tell the SVG path to be a thin blue line without any area fill */
+#red {
+	stroke: darkred;
+	stroke-width: 2;
+	/*fill: red;*/
+}
+
+#green {
+	/*fill: green;*/
+	stroke: green;
+	stroke-width: 2;
+	fill: none;
+}
+
+	.axis {
+  shape-rendering: crispEdges;
+}
+
+.x.axis line {
+  stroke: lightgrey;
+}
+
+.x.axis .minor {
+  stroke-opacity: .5;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.y.axis line, .y.axis path {
+  fill: none;
+  stroke: #000;
+}
