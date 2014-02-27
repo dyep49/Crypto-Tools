@@ -9,7 +9,7 @@ class HomeController < ApplicationController
 			format.json do 
 				# binding.pry
 				# response = cryptsy.depth(params["pairId"].to_i)
-				response = cryptsy.depth(125)
+				response = cryptsy.depth(135)
 				# binding.pry
 				parsed_response = response["return"]
 				render json: parsed_response.to_json

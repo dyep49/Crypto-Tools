@@ -3,6 +3,7 @@
 	stroke: darkred;
 	stroke-width: 2;
 	/*fill: red;*/
+	fill: none;
 }
 
 #green {
@@ -31,4 +32,8 @@
 .y.axis line, .y.axis path {
   fill: none;
   stroke: #000;
+}
+
+svg{
+	margin: 125px;
 }
