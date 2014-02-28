@@ -10,7 +10,6 @@ var Trade = function(time, price){
 
 var CandleStick = function(open_time, open, close, min, max){
 	this.open_datetime = open_time
-	// this.close_datetime = close_time
 	this.open = open
 	this.close = close
 	this.min = min
@@ -18,11 +17,12 @@ var CandleStick = function(open_time, open, close, min, max){
 }
 
 function roundTime(date) {
-    date.setHours(date.getHours() + Math.floor(date.getMinutes()/60));
-    date.setMinutes(0);
-    date.setSeconds(date.getSeconds() + Math.floor(date.getSeconds()/60));
-    date.setSeconds(0);
-    return date;
+		var copied_date = new Date(date.getTime());
+    copied_date.setHours(date.getHours() + Math.floor(date.getMinutes()/60));
+    copied_date.setMinutes(0);
+    copied_date.setSeconds(date.getSeconds() + Math.floor(date.getSeconds()/60));
+    copied_date.setSeconds(0);
+    return copied_date;
 }
 
 var RenderHistory = function(){
@@ -36,9 +36,10 @@ var RenderHistory = function(){
 		url: '/',
 		dataType: 'json',
 		success: function(d){
+			alert('got the data')
 			self.populate_line_array(d)
-			self.renderGraph()
 			self.populate_candlestick_array(self.trade_history)
+			self.renderGraph()
 		}
 		})
 	}
@@ -67,7 +68,7 @@ var RenderHistory = function(){
 	this.renderGraph = function(){
 		var width = 1000
 		var height = 600
-		var margin = {top: 40, right: 40, bottom: 40, left: 40}
+		var margin = {top: 20, right: 40, bottom: 20, left: 200}
 
 		var x_min = _.last(self.trade_history).datetime
 		var x_max = new Date()
@@ -75,19 +76,21 @@ var RenderHistory = function(){
 		var y_min = _.min(self.trade_history, function(trade){return trade.price}).price
 		var y_max = _.max(self.trade_history, function(trade){return trade.price}).price
 
+		// var candlestick_max = _.max(self.trade_history, function(candlestick){return candlestick.max - candlestick.min})
+		// var candlestick_difference = Math.abs(candlestick_max.open - candlestick_max.close)
 
 		var x = d3.time.scale()
 			.domain([x_min, x_max])
-			.range([0, width - margin.left - margin.right])
+			.range([0 + margin.left, width - margin.right])
 
 		var y = d3.scale.linear()
 			.domain([y_min, y_max])
-			.range([height - margin.top - margin.bottom, 0])
+			.range([height - margin.top, 0 + margin.bottom])
 
 		var xAxis = d3.svg.axis()
 			.scale(x)
-			// .ticks(d3.time.hours, 1)
-			// .tickSize(height)
+			.orient('top')
+			// .tickSize(-height)
 			// .tickSubdivide()
 
 		var yAxis = d3.svg.axis()
@@ -111,21 +114,44 @@ var RenderHistory = function(){
 
 		svg.append('g')
 			.attr('class', "x axis")
+			.attr("transform", "translate(0," + height + ")")
 			.call(xAxis)
 
 		svg.append("svg:path")
-			.attr("id", "green")
+			.attr("id", "black")
 			.attr("d", line(self.trade_history))
 
-	svg.append("rect")
-  .attr("x", 0)
-  .attr("y", 0)
-  .attr("height", height)
-  .attr("width", width)
-  .style("stroke", 'black')
-  .style("fill", "none")
-  .style("stroke-width", 1);
-	}
+		svg.append("rect")
+	  .attr("x", 0)
+	  .attr("y", 0)
+	  .attr("height", height)
+	  .attr("width", width)
+	  .style("stroke", 'black')
+	  .style("fill", "none")
+	  .style("stroke-width", 1);
+
+		svg.selectAll('rect')
+			.data(self.candlestick_history)
+			.enter().append("svg:rect")
+			.attr('x', function(d) {return x(d.open_datetime)})
+			.attr('y', function(d) {return y(_.max([d.open, d.close]))})
+			.attr('height', function(d) {return Math.abs(y(d.open)-y(d.close))})
+			.attr('width', function(d){return .1 * (width - 2*margin.top)/self.candlestick_history.length})
+			.attr('fill', function(d){return d.open > d.close ? "green" : "red"})
+		
+		svg.selectAll('line.stem')
+			.data(self.candlestick_history)
+			.enter().append('svg:line')
+			.attr('class', 'stem')
+			.attr('x1', function(d){return x(d.open_datetime) + .05 * (width - 2 * margin.top)/ self.candlestick_history.length})
+			.attr('x2', function(d){return x(d.open_datetime) + .05 * (width - 2 * margin.top)/ self.candlestick_history.length})
+			.attr('y1', function(d){return y(d.max)})
+			.attr('y2', function(d){return y(d.min)})
+			.attr('stroke', function(d){return d.open > d.close ? "green" : "red"})
+
+		}
+
+
 }
 
 
