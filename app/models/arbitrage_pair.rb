@@ -22,16 +22,30 @@ class ArbitragePair
 	# 	end
 	# 	arbitrage_pairs
 	# end
+		def ==(other)
+			[self.buy_exchange == other.buy_exchange,
+			self.sell_exchange == other.sell_exchange,
+			self.primary == other.primary,
+			self.secondary == other.secondary,
+			self.quantity == other.quantity,
+			self.total_cost == other.total_cost,
+			self.lowest_ask == other.lowest_ask,
+			self.highest_bid == other.highest_bid]
+			.all? {|attribute| attribute == true}
+		end
 
 		def self.find_arbitrage
-		arbitrage_pairs = []
-		Exchange.all.each do |exchange|
-		exchange.coinpairs.each do |coinpair|
-				arbitrage_pair = coinpair.arbitrage
-				arbitrage_pairs << arbitrage_pair if arbitrage_pair
+			arbitrage_pairs = []
+			tested_coinpairs = []
+			Exchange.all.each do |exchange|
+			exchange.coinpairs.each do |coinpair|
+					arbitrage_pair = coinpair.arbitrage
+					if arbitrage_pair 
+							arbitrage_pairs << arbitrage_pair unless arbitrage_pairs.any?{|pair| pair == arbitrage_pair} 
+					end
+				end
 			end
+			arbitrage_pairs
 		end
-		arbitrage_pairs
-	end
 
 end
