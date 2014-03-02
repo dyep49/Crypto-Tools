@@ -68,7 +68,7 @@ var RenderHistory = function(){
 	this.renderGraph = function(){
 		var width = 1000
 		var height = 600
-		var margin = {top: 20, right: 40, bottom: 20, left: 200}
+		var margin = {top: 50, right: 40, bottom: 30, left: 200}
 
 		var x_min = _.last(self.trade_history).datetime
 		var x_max = new Date()
@@ -89,20 +89,23 @@ var RenderHistory = function(){
 
 		var xAxis = d3.svg.axis()
 			.scale(x)
+			.ticks(10)
+			// .tickSize(-height-1000)
 			.orient('top')
-			// .tickSize(-height)
-			// .tickSubdivide()
+			
 
 		var yAxis = d3.svg.axis()
 			.scale(y)
-			.ticks(5)
+			// .ticks(10)
 			.orient("right")
+			// .tickSize(width)
 
 		var svg = d3.select('body').append('svg')
 			.attr('class', 'history')
 			.attr('width', width)
 			.attr('height', height)
-			.append('g')
+			
+		var g = d3.select().append('g')
 
 		var line = d3.svg.line()
 			.x(function(d){return x(d.datetime)})
@@ -111,6 +114,8 @@ var RenderHistory = function(){
 		svg.append('g')
 			.attr('class', 'y axis')
 			.call(yAxis)
+
+
 
 		svg.append('g')
 			.attr('class', "x axis")
@@ -137,7 +142,7 @@ var RenderHistory = function(){
 			.attr('y', function(d) {return y(_.max([d.open, d.close]))})
 			.attr('height', function(d) {return Math.abs(y(d.open)-y(d.close))})
 			.attr('width', function(d){return .1 * (width - 2*margin.top)/self.candlestick_history.length})
-			.attr('fill', function(d){return d.open > d.close ? "green" : "red"})
+			.attr('fill', function(d){return d.open < d.close ? "green" : "red"})
 		
 		svg.selectAll('line.stem')
 			.data(self.candlestick_history)
@@ -147,7 +152,16 @@ var RenderHistory = function(){
 			.attr('x2', function(d){return x(d.open_datetime) + .05 * (width - 2 * margin.top)/ self.candlestick_history.length})
 			.attr('y1', function(d){return y(d.max)})
 			.attr('y2', function(d){return y(d.min)})
-			.attr('stroke', function(d){return d.open > d.close ? "green" : "red"})
+			.attr('stroke', function(d){return d.open < d.close ? "green" : "red"})
+
+
+		svg.call(d3.behavior.zoom()
+  		.on("zoom", function() {
+  		console.log(d3.event.translate[0])
+    	g.attr("transform", "translate(" + d3.event.translate[0] + "," + d3.event.translate[1] + ") scale(" + d3.event.scale + ")")
+  		})
+		)
+
 
 		}
 
@@ -155,7 +169,7 @@ var RenderHistory = function(){
 }
 
 
-$(document).ready(function(){
-	test = new RenderHistory();
-	test.fetchTrades();
-})
+// $(document).ready(function(){
+// 	test = new RenderHistory();
+// 	test.fetchTrades();
+// })

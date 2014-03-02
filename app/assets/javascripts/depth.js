@@ -90,7 +90,8 @@ var RenderDepth = function(){
 		var graph = d3.select('body').append('svg:svg')
 			.attr('width', width + 100)
 			.attr('height', height + 100)
-			.append("svg:g")	
+		
+		var g = graph.append("svg:g")	
 
 		var line = d3.svg.line()
 			.x(function(d){return x(d.x)})
@@ -117,6 +118,13 @@ var RenderDepth = function(){
 		graph.append("svg:path")
 			.attr("id", "red")
 			.attr("d", line(self.sell_data_array));
+
+		graph.call(d3.behavior.zoom()
+  		.on("zoom", function() {
+  			console.log(d3.event.translate[0])
+    		g.attr("transform", "translate(" + d3.event.translate[0] + "," + d3.event.translate[1] + ") scale(" + d3.event.scale + ")")
+  		})
+  	)
 	}
 }
 

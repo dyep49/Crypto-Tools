@@ -11,13 +11,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140226180046) do
+ActiveRecord::Schema.define(version: 20140228163429) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "coinpairs", force: true do |t|
+    t.string   "primary"
+    t.string   "secondary"
+    t.integer  "exchange_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "coins", force: true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "exchanges", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "orders", force: true do |t|
+    t.integer  "coinpair_id"
+    t.string   "order_type"
+    t.float    "quantity"
+    t.float    "price"
+    t.float    "total"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
