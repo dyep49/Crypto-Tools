@@ -2,7 +2,7 @@ require 'cryptsy/api'
 require 'btce'
 
 def cryptsy_depth
-	exchange = Exchange.create(name: 'cryptsy')
+	exchange = Exchange.create(name: 'cryptsy', buy_fee: 0.002, sell_fee: 0.003)
 	cryptsy = Cryptsy::API::Client.new(ENV["CRYPTSY_PUBLIC_KEY"], ENV["CRYPTSY_PRIVATE_KEY"])
 	response = cryptsy.orderdata["return"].values
 	response.each do |coinpair|
@@ -33,7 +33,7 @@ def cryptsy_depth
 end
 
 def bter_depth
-	bter = Exchange.create(name: 'bter')
+	bter = Exchange.create(name: 'bter', buy_fee: 0.002, sell_fee: 0.002)
 	pairs = HTTParty.get('http://data.bter.com/api/1/pairs')
 	pairs.each do |pair|
 		code = pair.scan(/[a-z]+/)
@@ -60,7 +60,7 @@ def bter_depth
 end
 
 def btce_depth
-	btce = Exchange.create(name: 'btce')
+	btce = Exchange.create(name: 'btce', buy_fee: 0.002, sell_fee: 0.002)
 	pairs = Btce::API::CURRENCY_PAIRS
 	pairs.each do |pair|
 		code = pair.scan(/[a-z]+/)

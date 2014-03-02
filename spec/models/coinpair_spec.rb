@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Coinpair do 
 	describe "given an arbitrage opportunity" do 
 		before do 
-			exchange_1 = Exchange.create(name: "cryptsy")
-			exchange_2 = Exchange.create(name: "exchange 2")
+			exchange_1 = Exchange.create(name: "cryptsy", buy_fee: 0.001, sell_fee: 0.001)
+			exchange_2 = Exchange.create(name: "exchange 2", buy_fee: 0.001, sell_fee: 0.001)
 			
 			coinpair_1 = Coinpair.create(primary: 'LTC', secondary: 'BTC')
 			coinpair_2 = Coinpair.create(primary: 'LTC', secondary: 'BTC')

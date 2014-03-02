@@ -34,14 +34,29 @@ class ArbitragePair
 			.all? {|attribute| attribute == true}
 		end
 
+		# def self.find_arbitrage
+		# 	arbitrage_pairs = []
+		# 	tested_coinpairs = []
+		# 	Exchange.all.each do |exchange|
+		# 	exchange.coinpairs.each do |coinpair|
+		# 			arbitrage_pair = coinpair.arbitrage
+		# 			if arbitrage_pair 
+		# 					arbitrage_pairs << arbitrage_pair unless arbitrage_pairs.any?{|pair| pair == arbitrage_pair} 
+		# 			end
+		# 		end
+		# 	end
+		# 	arbitrage_pairs
+		# end
+
 		def self.find_arbitrage
 			arbitrage_pairs = []
 			tested_coinpairs = []
 			Exchange.all.each do |exchange|
-			exchange.coinpairs.each do |coinpair|
-					arbitrage_pair = coinpair.arbitrage
-					if arbitrage_pair 
-							arbitrage_pairs << arbitrage_pair unless arbitrage_pairs.any?{|pair| pair == arbitrage_pair} 
+				exchange.coinpairs.each do |coinpair|
+					unless tested_coinpairs.any?{|pair| pair.similar?(coinpair)}
+						tested_coinpairs << coinpair
+						arbitrage_pair = coinpair.arbitrage
+						arbitrage_pairs << arbitrage_pair if arbitrage_pair
 					end
 				end
 			end

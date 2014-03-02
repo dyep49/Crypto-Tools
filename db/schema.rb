@@ -32,6 +32,8 @@ ActiveRecord::Schema.define(version: 20140228163429) do
 
   create_table "exchanges", force: true do |t|
     t.string   "name"
+    t.float    "buy_fee"
+    t.float    "sell_fee"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
