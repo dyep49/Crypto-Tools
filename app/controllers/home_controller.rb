@@ -22,7 +22,7 @@ class HomeController < ApplicationController
 		respond_to do |format|
 			format.html
 			format.json do 
-				response = cryptsy.markettrades(114)
+				response = cryptsy.markettrades(146)
 				parsed_response = response["return"]
 				render json: parsed_response.to_json
 			end
