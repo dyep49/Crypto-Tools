@@ -36,7 +36,7 @@ var RenderHistory = function(){
 		url: '/',
 		dataType: 'json',
 		success: function(d){
-			alert('got the data')
+			// alert('got the data')
 			self.populate_line_array(d)
 			self.populate_candlestick_array(self.trade_history)
 			self.renderGraph()
@@ -47,7 +47,7 @@ var RenderHistory = function(){
 	this.populate_line_array = function(data){
 		data.forEach(function(trade){
 			datetime = new Date(trade.datetime)
-			self.trade_history.push(new Trade(datetime, trade.tradeprice))
+			self.trade_history.push(new Trade(datetime, parseFloat(trade.tradeprice)))
 		})
 	}
 
@@ -66,74 +66,80 @@ var RenderHistory = function(){
 	}
 
 	this.renderGraph = function(){
-		var width = 1000
-		var height = 600
-		var margin = {top: 50, right: 40, bottom: 30, left: 200}
+		var margin = {top: 20, right: 30, bottom: 20, left: 80};
+		var width = 960 - margin.left - margin.right;
+		var height = 500 - margin.top - margin.bottom;
 
-		var x_min = _.last(self.trade_history).datetime
-		var x_max = new Date()
+		var svg = d3.select('body')
+				.append('svg')
+		    .attr("width", width + margin.left + margin.right)
+		    .attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-		var y_min = _.min(self.trade_history, function(trade){return trade.price}).price
-		var y_max = _.max(self.trade_history, function(trade){return trade.price}).price
+		var min_x = d3.min(self.candlestick_history, function(d){return d.open_datetime})
+		var max_x = new Date()
 
-		// var candlestick_max = _.max(self.trade_history, function(candlestick){return candlestick.max - candlestick.min})
-		// var candlestick_difference = Math.abs(candlestick_max.open - candlestick_max.close)
+		
 
 		var x = d3.time.scale()
-			.domain([x_min, x_max])
-			.range([0 + margin.left, width - margin.right])
+			.domain([min_x, max_x])
+			.range([0, width - 20])
 
 		var y = d3.scale.linear()
-			.domain([y_min, y_max])
-			.range([height - margin.top, 0 + margin.bottom])
+			.domain(d3.extent(self.trade_history, function(d){return d.price}))
+			.range([height - 20, 0 + 20])
+
+		function make_x_axis() {		
+	    return d3.svg.axis()
+	        .scale(x)
+	        .orient("bottom")
+	        .ticks(5)
+		}
+
+		function make_y_axis() {		
+	    return d3.svg.axis()
+	        .scale(y)
+	        .orient("left")
+	        .ticks(8)
+		}
+
+
+
 
 		var xAxis = d3.svg.axis()
 			.scale(x)
-			.ticks(10)
-			// .tickSize(-height-1000)
-			.orient('top')
-			
+			.orient("bottom").ticks(5);
 
 		var yAxis = d3.svg.axis()
 			.scale(y)
-			// .ticks(10)
-			.orient("right")
-			// .tickSize(width)
-
-		var svg = d3.select('body').append('svg')
-			.attr('class', 'history')
-			.attr('width', width)
-			.attr('height', height)
-			
-		var g = d3.select().append('g')
+			.orient("left").ticks(8)
 
 		var line = d3.svg.line()
 			.x(function(d){return x(d.datetime)})
 			.y(function(d){return y(d.price)})
 
+		svg.append("path")
+			.attr("id", "black")
+			.attr("d", line(self.trade_history))
+
+		svg.append('g')
+			.attr('class', 'x axis')
+			.attr('transform', 'translate(0,' + height + ')')
+			.call(xAxis)
+
 		svg.append('g')
 			.attr('class', 'y axis')
 			.call(yAxis)
 
-
-
-		svg.append('g')
-			.attr('class', "x axis")
-			.attr("transform", "translate(0," + height + ")")
-			.call(xAxis)
-
-		svg.append("svg:path")
-			.attr("id", "black")
-			.attr("d", line(self.trade_history))
-
-		svg.append("rect")
-	  .attr("x", 0)
-	  .attr("y", 0)
-	  .attr("height", height)
-	  .attr("width", width)
-	  .style("stroke", 'black')
-	  .style("fill", "none")
-	  .style("stroke-width", 1);
+		// svg.append("rect")
+		//   .attr("x", 0)
+		//   .attr("y", 0)
+		//   .attr("height", height)
+		//   .attr("width", width)
+		//   .style("stroke", 'black')
+		//   .style("fill", "none")
+		//   .style("stroke-width", 1);
 
 		svg.selectAll('rect')
 			.data(self.candlestick_history)
@@ -152,24 +158,35 @@ var RenderHistory = function(){
 			.attr('x2', function(d){return x(d.open_datetime) + .05 * (width - 2 * margin.top)/ self.candlestick_history.length})
 			.attr('y1', function(d){return y(d.max)})
 			.attr('y2', function(d){return y(d.min)})
-			.attr('stroke', function(d){return d.open < d.close ? "green" : "red"})
+			.attr('stroke', 'black')
 
+    svg.append("g")			
+	    .attr("class", "grid")
+	    .attr("transform", "translate(0," + height + ")")
+	    .call(make_x_axis()
+	        .tickSize(-height, 0, 0)
+	        .tickFormat("")
+    )
+
+    svg.append("g")			
+        .attr("class", "grid")
+        .call(make_y_axis()
+            .tickSize(-width, 0, 0)
+            .tickFormat("")
+        )	
 
 		svg.call(d3.behavior.zoom()
   		.on("zoom", function() {
   		console.log(d3.event.translate[0])
-    	g.attr("transform", "translate(" + d3.event.translate[0] + "," + d3.event.translate[1] + ") scale(" + d3.event.scale + ")")
+    	svg.attr("transform", "translate(" + d3.event.translate[0] + "," + d3.event.translate[1] + ") scale(" + d3.event.scale + ")")
   		})
 		)
 
 
-		}
+
+	}
 
 
 }
 
 
-// $(document).ready(function(){
-// 	test = new RenderHistory();
-// 	test.fetchTrades();
-// })

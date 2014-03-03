@@ -1,6 +1,6 @@
 Order = function(price, quantity){
-	this.x = price
-	this.y = quantity
+	this.price = price
+	this.quantity = quantity
 }
 
 var RenderDepth = function(){
@@ -10,7 +10,11 @@ var RenderDepth = function(){
 	this.sell_data_array = []
 	this.buy_data_array = []
 
-	this.data = $.ajax({
+	this.getData = function(callback){
+		self.sell_data_array = []
+		self.buy_data_array = []
+
+		$.ajax({
 		url: '/depth',
 		dataType: 'json',
 		success: function(d){
@@ -31,53 +35,23 @@ var RenderDepth = function(){
 				var quantity = buy_total
 				self.buy_data_array.push(new Order(price, quantity))
 			})
-			self.buy_data_array.pop()
-			self.buy_data_array.pop()
-			self.buy_data_array.pop()
-			self.buy_data_array.pop()
-			self.buy_data_array.pop()
-			self.buy_data_array.pop()
-			self.buy_data_array.pop()
-			self.buy_data_array.pop()
-			self.buy_data_array.pop()
-			self.buy_data_array.pop()
-			self.buy_data_array.pop()
-			self.buy_data_array.pop()
-			self.buy_data_array.pop()
-			self.buy_data_array.pop()
-			self.buy_data_array.pop()
-			self.buy_data_array.pop()
 
-
-
-			self.sell_data_array.pop()
-			self.sell_data_array.pop()
-			self.sell_data_array.pop()
-			self.sell_data_array.pop()
-			self.sell_data_array.pop()
-			self.sell_data_array.pop()
-			self.sell_data_array.pop()
-			self.sell_data_array.pop()
-			self.sell_data_array.pop()
-			self.sell_data_array.pop()
-			self.sell_data_array.pop()
-			self.sell_data_array.pop()
-			self.sell_data_array.pop()
-			self.sell_data_array.pop()
-			self.sell_data_array.pop()
-
-			self.renderGraphs()
+			if(typeof callback === 'function' && callback()){
+				callback()
+			}
 		}
-	});	
+		});	
+	}
 
 	this.renderGraphs = function(){
-		var width = 1000
-		var height = 600
+		var margin = {top: 20, right: 10, bottom: 20, left: 90};
+		var width = 960 - margin.left - margin.right
+		var height = 500 - margin.top - margin.bottom;
 
-		var x_min = _.min(self.buy_data_array, function(order){return order.x}).x
-		var x_max = _.max(self.sell_data_array, function(order){return order.x}).x
+		var x_min = d3.min(self.buy_data_array, function(order){return order.price})
+		var x_max = d3.max(self.sell_data_array, function(order){return order.price})
 
-		var y_max = _.max(self.sell_data_array.concat(self.buy_data_array), function(order){return order.y}).y
+		var y_max = d3.max(self.sell_data_array.concat(self.buy_data_array), function(order){return order.quantity})
 
 		var x = d3.scale.linear()
 			.domain([x_min, x_max])
@@ -87,110 +61,143 @@ var RenderDepth = function(){
 			.domain([0, y_max])
 			.range([height, 0])
 
-		var graph = d3.select('body').append('svg:svg')
-			.attr('width', width + 100)
-			.attr('height', height + 100)
+		function make_x_axis() {		
+	    return d3.svg.axis()
+	        .scale(x)
+	        .orient("bottom")
+	        .ticks(8)
+		}
+
+		function make_y_axis() {		
+	    return d3.svg.axis()
+	        .scale(y)
+	        .orient("left")
+	        .ticks(8)
+		}
+
+		var svg = d3.select('body')
+			.append('svg')
+	    .attr("width", width + margin.left + margin.right)
+	    .attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 		
-		var g = graph.append("svg:g")	
+		var xAxis = d3.svg.axis()
+			.scale(x)
+			.orient("bottom")
+			.ticks(8)
+
+		var yAxis = d3.svg.axis()
+			.scale(y)
+			.ticks(8)
+			.orient("left");
+
+		var	area = d3.svg.area()
+	    .x(function(d) { return x(d.price);})
+	    .y0(height)
+	    .y1(function(d) { return y(d.quantity);});
 
 		var line = d3.svg.line()
-			.x(function(d){return x(d.x)})
-			.y(function(d){return y(d.y)})
+			.x(function(d){return x(d.price)})
+			.y(function(d){return y(d.quantity)})
 
-		var xAxis = d3.svg.axis().scale(x).tickSize(height).tickSubdivide(true);
 
-		var yAxisLeft = d3.svg.axis().scale(y).ticks(5).orient("right");
-	
-		graph.append("svg:g")
-			.attr("class", "x axis")
-			// .attr("transform", "translate(0," + 300 + ")")
-			.call(xAxis);
+    svg.append("path")
+        .datum(self.buy_data_array)
+        .attr("class", "bid")
+        .attr("d", area)
+        .style('fill', 'green')
+        .style('opacity', 0.8)
 
-		graph.append("svg:g")
-			.attr("class", "y axis")
-			.attr("transform", "translate(0, 0)")
-			.call(yAxisLeft);
+    svg.append("path")
+        .datum(self.sell_data_array)
+        .attr("class", "ask")
+        .attr("d", area)
+        .style('fill', 'red')
+        .style('opacity', 0.8)
 
-		graph.append("svg:path")
+		svg.append("path")
 			.attr("id", "green")
 			.attr("d", line(self.buy_data_array));
 
-		graph.append("svg:path")
+		svg.append("path")
 			.attr("id", "red")
 			.attr("d", line(self.sell_data_array));
+	
+		svg.append("g")
+			.attr("class", "x axis")
+			.attr('transform', 'translate(0,' + height + ')')
+			.call(xAxis);
 
-		graph.call(d3.behavior.zoom()
-  		.on("zoom", function() {
-  			console.log(d3.event.translate[0])
-    		g.attr("transform", "translate(" + d3.event.translate[0] + "," + d3.event.translate[1] + ") scale(" + d3.event.scale + ")")
-  		})
-  	)
+		svg.append('g')
+			.attr('class', 'y axis')
+			.call(yAxis)
+
+		svg.append("g")			
+	    .attr("class", "grid")
+	    .attr("transform", "translate(0," + height + ")")
+	    .call(make_x_axis()
+	        .tickSize(-height, 0, 0)
+	        .tickFormat("")
+    )
+
+    svg.append("g")			
+        .attr("class", "grid")
+        .call(make_y_axis()
+            .tickSize(-width, 0, 0)
+            .tickFormat("")
+        )	
+
+		// svg.call(d3.behavior.zoom()
+  // 		.on("zoom", function() {
+  // 		console.log(d3.event.translate[0])
+  //   	svg.attr("transform", "translate(" + d3.event.translate[0] + "," + d3.event.translate[1] + ") scale(" + d3.event.scale + ")")
+  // 		})
+		// )
+		var updateGraph = function(){
+			console.log('updating')
+			self.getData(function(){
+				var updated_x_min = d3.min(self.buy_data_array, function(order){return order.price})
+				var updated_x_max = d3.max(self.sell_data_array, function(order){return order.price})
+				var updated_y_max = d3.max(self.sell_data_array.concat(self.buy_data_array), function(order){return order.quantity})
+				
+
+				x.domain([updated_x_min, updated_x_max])
+				y.domain([0, updated_y_max])
+
+				var graph = d3.select('body').transition()
+
+				graph.select('#green')
+					.duration(750)
+					.attr("d", line(self.buy_data_array))
+				graph.select('#red')
+					.duration(750)
+					.attr("d", line(self.sell_data_array))
+				graph.select(".x.axis")
+					.duration(750)
+					.call(xAxis)
+				graph.select(".y.axis")
+					.duration(750)
+					.call(yAxis)
+				graph.select('#bid')
+					.duration(750)
+	        .attr("d", area)
+	      graph.select('#ask')
+					.duration(750)
+	        .attr("d", area)
+
+
+
+			})
+			
+		}
+
+		setInterval(function(){
+			updateGraph()
+		}, 5000)
+
+
 	}
+
 }
 
-// 	this.renderGraphs = function(){
-
-// 		var margin = {top: 80, right: 80, bottom: 80, left: 80}
-// 		var width = 1000 - margin.right - margin.right;
-// 		var height = 800 - margin.top - margin.bottom;
-
-
-// 		// var max_x = _.max(self.sell_data_array.concat(self.buy_data_array), function(order){return order.x})
-// 		var max_y = _.max(self.sell_data_array.concat(self.buy_data_array), function(order){return order.y}) 
-
-// 		var max_x = _.max(self.sell_data_array, function(order){return order.x})
-// 		// var max_y = _.max(self.sell_data_array, function(order){return order.y}) 
-
-// 		 // x = d3.scale.linear().domain([_.last(self.buy_data_array).x, max_x.x]).range([0, width])
-// 		// y = d3.scale.linear().domain([0, max_y.y]).range([0, height])
-
-
-// 		// function zoom(d) {        
-//   // 		graph.attr("transform",
-//   //     "translate(" + d3.event.translate + ")"+ " scale(" + d3.event.scale + ")");
-// 		// }
-
-
-// 		graph = d3.select('body').append('svg:svg')
-// 			.attr('width', width + margin.right + margin.left)
-// 			.attr('height', height + margin.top + margin.bottom)
-// 			// .call(d3.behavior.zoom()
-// 			// .x(x)
-// 			// .y(y)
-// 			// .scaleExtent([0,8])
-// 			// .on("zoom", zoom))
-
-
-// 		var g = graph.append("svg:g")	
-
-
-
-// 		var line = d3.svg.line()
-// 			.x(function(d){console.log(d); return x(d.x)})
-// 			.y(function(d){console.log(y(d.y));return y(d.y)})
-
-
-// 		var xAxis = d3.svg.axis().scale(x).tickSize(-height).tickSubdivide(true);
-// 		graph.append("svg:g")
-// 			.attr("class", "x axis")
-// 			.attr("transform", "translate(0," + height + ")")
-// 			.call(xAxis);
-
-// 		var yAxisLeft = d3.svg.axis().scale(y).ticks(4).orient("right");
-// 		graph.append("svg:g")
-// 			.attr("class", "y axis")
-// 			.attr("transform", "translate(0, 0)")
-// 				.call(yAxisLeft);
-
-// 		graph.append("svg:path")
-// 			.attr("id", "green")
-// 			.attr("d", line(self.buy_data_array));
-// 		// graph.append("svg:path")
-// 		// 	.attr("id", "red")
-// 		// 	.attr("d", line(self.sell_data_array));
-// 	}
-// }
-
-// $(document).ready(function(){
-// 	test = new RenderDepth();
-// })

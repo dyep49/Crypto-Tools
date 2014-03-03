@@ -19,27 +19,28 @@
 	fill: none;
 }
 
-	.axis {
-  shape-rendering: crispEdges;
-}
+/*path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}*/
 
-.x.axis line {
-  stroke: lightgrey;
-}
-
-.x.axis .minor {
-  stroke-opacity: .5;
-}
-
-.x.axis path {
-  display: none;
-}
-
-.y.axis line, .y.axis path {
-  fill: none;
-  stroke: #000;
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
 }
 
 svg{
 	margin: 125px;
+}
+
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+.grid path {
+    stroke-width: 0;
 }

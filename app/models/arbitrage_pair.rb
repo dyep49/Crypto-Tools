@@ -1,6 +1,6 @@
 class ArbitragePair 
 
-	attr_accessor :buy_exchange, :sell_exchange, :primary, :secondary, :quantity, :total_cost, :lowest_ask, :highest_bid
+	attr_accessor :buy_exchange, :sell_exchange, :primary, :secondary, :quantity, :total_cost, :lowest_ask, :highest_bid, :profit
 
 	def initialize(options = {})
 		@buy_exchange = options[:buy_exchange]
@@ -8,9 +8,11 @@ class ArbitragePair
 		@primary = options[:primary]
 		@secondary = options[:secondary]
 		@quantity = options[:quantity]
-		@total_cost = options[:total_cost]
+		@profit = options[:profit]
 		@lowest_ask = options[:lowest_ask]
 		@highest_bid = options[:highest_bid]
+		# @total_cost = options[:total_cost]
+
 	end
 
 	# def self.find_arbitrage
@@ -22,17 +24,17 @@ class ArbitragePair
 	# 	end
 	# 	arbitrage_pairs
 	# end
-		def ==(other)
-			[self.buy_exchange == other.buy_exchange,
-			self.sell_exchange == other.sell_exchange,
-			self.primary == other.primary,
-			self.secondary == other.secondary,
-			self.quantity == other.quantity,
-			self.total_cost == other.total_cost,
-			self.lowest_ask == other.lowest_ask,
-			self.highest_bid == other.highest_bid]
-			.all? {|attribute| attribute == true}
-		end
+		# def ==(other)
+		# 	[self.buy_exchange == other.buy_exchange,
+		# 	self.sell_exchange == other.sell_exchange,
+		# 	self.primary == other.primary,
+		# 	self.secondary == other.secondary,
+		# 	self.quantity == other.quantity,
+		# 	self.total_cost == other.total_cost,
+		# 	self.lowest_ask == other.lowest_ask,
+		# 	self.highest_bid == other.highest_bid]
+		# 	.all? {|attribute| attribute == true}
+		# end
 
 		# def self.find_arbitrage
 		# 	arbitrage_pairs = []

@@ -9,7 +9,7 @@ class HomeController < ApplicationController
 			format.json do 
 				# binding.pry
 				# response = cryptsy.depth(params["pairId"].to_i)
-				response = cryptsy.depth(135)
+				response = cryptsy.depth(132)
 				# binding.pry
 				parsed_response = response["return"]
 				render json: parsed_response.to_json
@@ -22,7 +22,7 @@ class HomeController < ApplicationController
 		respond_to do |format|
 			format.html
 			format.json do 
-				response = cryptsy.markettrades(135)
+				response = cryptsy.markettrades(114)
 				parsed_response = response["return"]
 				render json: parsed_response.to_json
 			end

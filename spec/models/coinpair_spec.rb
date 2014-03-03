@@ -3,14 +3,14 @@ require 'spec_helper'
 describe Coinpair do 
 	describe "given an arbitrage opportunity" do 
 		before do 
-			exchange_1 = Exchange.create(name: "cryptsy", buy_fee: 0.001, sell_fee: 0.001)
-			exchange_2 = Exchange.create(name: "exchange 2", buy_fee: 0.001, sell_fee: 0.001)
+			exchange_1 = Exchange.create(name: "cryptsy", buy_fee: 0.1, sell_fee: 0.1)
+			exchange_2 = Exchange.create(name: "exchange 2", buy_fee: 0.1, sell_fee: 0.1)
 			
 			coinpair_1 = Coinpair.create(primary: 'LTC', secondary: 'BTC')
 			coinpair_2 = Coinpair.create(primary: 'LTC', secondary: 'BTC')
 			
-			order_1 = Order.create(order_type:'buy', price: 10, quantity: 5)
-			order_2 = Order.create(order_type:'sell', price: 8, quantity: 5)
+			order_1 = Order.create(order_type:'buy', price: 10, quantity: 6)
+			order_2 = Order.create(order_type:'sell', price: 8, quantity: 3)
 			order_3 = Order.create(order_type:'sell', price: 12, quantity: 5)
 			order_4 = Order.create(order_type:'buy', price: 6, quantity: 5)
 
@@ -26,6 +26,8 @@ describe Coinpair do
 			it "should check the opportunities and" do 
 				Coinpair.first.arbitrage.lowest_ask.should == 8.0
 				Coinpair.first.arbitrage.highest_bid.should == 10.0
+				Coinpair.first.arbitrage.quantity.should == 3
+				Coinpair.first.arbitrage.profit.round(1).should == 0.6
 			end
 		end
 	end
