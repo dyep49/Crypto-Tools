@@ -11,7 +11,7 @@ namespace :update do
   		market_ids
   	end
 
-  	def update_orders
+  	def update_trades
 			cryptsy = Cryptsy::API::Client.new(ENV["CRYPTSY_PUBLIC_KEY"], ENV["CRYPTSY_PRIVATE_KEY"])
   		cryptsy_exchange = Exchange.where(name: 'cryptsy').first
   		market_ids = get_ids
@@ -32,12 +32,12 @@ namespace :update do
   				quantity = trade["quantity"]
   				order_type = trade["initiate_ordertype"]
   				trade = Trade.create(trade_id: tradeid, datetime: datetime, price: tradeprice, quantity: quantity, order_type: order_type)
-  				coinpair.orders << trade
+  				coinpair.trades << trade
   			end
   		end
 	  end
 
-	  update_orders
+	  update_trades
 
 
 

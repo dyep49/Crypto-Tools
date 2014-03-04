@@ -2,6 +2,18 @@ require 'cryptsy/api'
 
 class HomeController < ApplicationController
 
+	def index
+		cryptsy = Cryptsy::API::Client.new(ENV["CRYPTSY_PUBLIC_KEY"], ENV["CRYPTSY_PRIVATE_KEY"])
+		respond_to do |format|
+			format.html
+			format.json do 
+				response = cryptsy.markettrades(132)
+				parsed_response = response["return"]
+				render json: parsed_response.to_json
+			end
+		end
+	end
+
 	def depth
 		cryptsy = Cryptsy::API::Client.new(ENV["CRYPTSY_PUBLIC_KEY"], ENV["CRYPTSY_PRIVATE_KEY"])
 		respond_to do |format|
@@ -17,17 +29,12 @@ class HomeController < ApplicationController
 		end
 	end
 
-	def index
-		cryptsy = Cryptsy::API::Client.new(ENV["CRYPTSY_PUBLIC_KEY"], ENV["CRYPTSY_PRIVATE_KEY"])
-		respond_to do |format|
-			format.html
-			format.json do 
-				response = cryptsy.markettrades(132)
-				parsed_response = response["return"]
-				render json: parsed_response.to_json
-			end
-		end
+	def arbitrage
+		@arbitrage = ArbitragePair.find_arbitrage
+		binding.pry
 	end
+
+
 
 
 end
