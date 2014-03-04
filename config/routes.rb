@@ -6,6 +6,8 @@ CryptoTools::Application.routes.draw do
   get 'arbitrage' => 'home#arbitrage'
   get 'static_pump' => 'home#static_pump'
   get 'static_depth' => 'home#static_depth'
+  get 'depth/:pair_id' => 'home#depth'
+  get 'grab_depth' => 'home#grab_depth'
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

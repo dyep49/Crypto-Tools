@@ -8,6 +8,7 @@ var RenderDepth = function(){
 	var self = this;
 
 	this.sell_data_array = []
+
 	this.buy_data_array = []
 
 	this.getData = function(callback){
@@ -15,8 +16,9 @@ var RenderDepth = function(){
 		self.buy_data_array = []
 
 		$.ajax({
-		url: '/depth',
+		url: '/grab_depth',
 		dataType: 'json',
+		data: {pair_id: params},
 		success: function(d){
 			console.log(d)
 			var sell_total = 0

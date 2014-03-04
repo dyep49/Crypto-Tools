@@ -1,5 +1,12 @@
+<script>
+	$(document).ready(function(){
+  	$("#pairs").tablesorter({cssAsc: "headerSortUp", cssDesc: "headerSortDown", cssHeader: "header"});
+  })
+</script>
+
+<h1>Arbitrage Opportunities</h1>
 <div class="table-responsive">
-<table class="table table-striped table-hover">
+<table id="pairs" class="table table-striped table-hover">
 	<thead>
 		<th>Buy Exchange</th>
 		<th>Sell Exchange</th>
@@ -12,13 +19,13 @@
 	<tbody>
 		<% @arbitrage.each do |pair| %>
 			<tr>
-				<td><%= pair.buy_exchange.name.capitalize %></td>
-				<td><%= pair.sell_exchange.name.capitalize %></td>
+				<td><%= pair.buy_exchange.capitalize %></td>
+				<td><%= pair.sell_exchange.capitalize %></td>
 				<td><%= pair.primary %>/<%= pair.secondary %></td>
-				<td><%= pair.quantity.round(8) %></td>
-				<td><%= pair.highest_bid.round(8) %></td>
-				<td><%= pair.lowest_ask.round(8) %></td>
-				<td><%= pair.profit.round(8) %> <%= pair.secondary %></td>
+				<td><%= "%f" % pair.quantity %></td>
+				<td><%= "%f" % pair.highest_bid %></td>
+				<td><%= "%f" % pair.lowest_ask %></td>
+				<td><%= "%f" % pair.profit %> <%= pair.secondary %></td>
 			</tr>
 		<% end %>
 	</tbody>

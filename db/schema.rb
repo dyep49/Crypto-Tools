@@ -11,10 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140303230933) do
+ActiveRecord::Schema.define(version: 20140304191007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "arbitrages", force: true do |t|
+    t.string   "buy_exchange"
+    t.string   "sell_exchange"
+    t.string   "primary"
+    t.string   "secondary"
+    t.float    "quantity"
+    t.float    "profit"
+    t.float    "lowest_ask"
+    t.float    "highest_bid"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "coinpairs", force: true do |t|
     t.string   "primary"
