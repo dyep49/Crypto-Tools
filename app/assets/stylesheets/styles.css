@@ -48,3 +48,8 @@ svg{
 h1{
 	text-align: center;
 }
+
+.progress {
+	display: none;
+}
+

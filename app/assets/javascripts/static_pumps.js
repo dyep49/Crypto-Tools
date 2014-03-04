@@ -1,6 +1,25 @@
+Number.prototype.noExponents= function(){
+    var data= String(this).split(/[eE]/);
+    if(data.length== 1) return data[0]; 
+
+    var  z= '', sign= this<0? '-':'',
+    str= data[0].replace('.', ''),
+    mag= Number(data[1])+ 1;
+
+    if(mag<0){
+        z= sign + '0.';
+        while(mag++) z += '0';
+        return z + str.replace(/^\-/,'');
+    }
+    mag -= str.length;  
+    while(mag--) z += '0';
+    return str + z;
+}
+
 var pairArray = []
 load_width = 0
 iteration = 0
+
 
 //Parsing cryptsy responses
 
@@ -29,12 +48,12 @@ var BtcPair = function(){
 		newRow.append('<td>' + self.name + '</td>');
 		newRow.append('<td>' + self.label + '</td>');
 		newRow.append('<td>' + (self.volume * self.lastTradePrice) + '</td>');
-		newRow.append('<td>' + self.lastTradePrice + '</td>');
+		newRow.append('<td>' + self.lastTradePrice.noExponents() + '</td>');
 		newRow.append('<td>' + self.doubleWall + '</td>');
 		newRow.append('<td>' + self.secondWall + '</td>');
 		newRow.append('<td>' + self.thirdWall + '</td>');
 		newRow.append('<td>' + self.fourthWall + '</td>');
-		$('tbody').append(newRow);
+		newRow.hide().appendTo('tbody').fadeIn(1000)
 		load_width += ((1 / pairArray.length) * 100);
 		iteration += 1;
 		$('.progress-bar').css('width', load_width + '%' );
@@ -44,7 +63,6 @@ var BtcPair = function(){
 
 
 	this.setDoubleWall = function(){
-		// debugger;
 		$.getJSON('/static_depth', {'pairId': self.pairId}, function(data){
 			var data = data
 			var doubleIndex;
@@ -57,7 +75,6 @@ var BtcPair = function(){
 			var fourthSellArray = [];
 
 			$.each(data, function(index, order){
-				debugger;
 				if (order.price > (self.lastTradePrice * 2)){
 					doubleIndex = index;
 					return false;
