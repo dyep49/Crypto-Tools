@@ -1,53 +1,17 @@
 class Coinpair < ActiveRecord::Base
 	belongs_to :exchange
 	has_many :orders
+	has_many :trades
 
 	def similar?(other)
 		self.primary == other.primary && self.secondary == other.secondary
 	end
 
 
-	# def arbitrage
-	# 	begin
-	# 		matches = Coinpair.where(primary: self.primary, secondary: self.secondary)
-	# 			if matches.any?
-	# 				sell_min_pair = matches.min_by{|match| match.orders.where(order_type: 'sell').first.price}
-	# 				sell_min_pair = matches.min_by do |match| 
-	# 					price = match.orders.where(order_type: 'sell').first.price
-	# 					price_with_fees = price + match.exchange.buy_fee * price
-	# 				end
-
-	# 				sell_min = sell_min_pair.orders.where(order_type:'sell').first.price 
-	# 				sell_min_with_fees = sell_min + sell_min_pair.exchange.buy_fee * sell_min
-
-
-	# 				buy_max_pair = matches.max_by do |match| 
-	# 					price = match.orders.where(order_type:'buy').first.price
-	# 					price_with_fees = price - match.exchange.sell_fee * price
-	# 				end
-	# 				buy_max = buy_max_pair.orders.where(order_type:'buy').first.price
-	# 				buy_max_with_fees = buy_max - buy_max_pair.exchange.sell_fee * buy_max
-
-
-
-
-
-	# 				if buy_max_with_fees > sell_min_with_fees
-	# 					buy_at = Exchange.find(sell_min_pair.exchange_id)
-	# 					sell_at = Exchange.find(buy_max_pair.exchange_id)
-	# 					ArbitragePair.new(buy_exchange: buy_at, sell_exchange: sell_at, primary:self.primary, secondary:self.secondary, lowest_ask: sell_min, highest_bid: buy_max)
-	# 				end
-	# 			end
-	# 	rescue
-	# 		nil
-	# 	end
-	# end
-
 	def arbitrage
 		begin
 			matches = Coinpair.where(primary: self.primary, secondary: self.secondary)
 				if matches.count > 1
-
 #---------------------------------------------------------------------------------------------------------------------
 
 					bid_max_pair = matches.max_by do |match| 
@@ -90,7 +54,6 @@ class Coinpair < ActiveRecord::Base
 
 						order_array = []
 						arbitrage_array = Coinpair.arbitrage_recursion(cloned_bids, cloned_asks, order_array)
-
 						if arbitrage_array.count >= 1
 							buy_at = Exchange.find(ask_min_pair.exchange_id)
 							sell_at = Exchange.find(bid_max_pair.exchange_id)
@@ -101,7 +64,7 @@ class Coinpair < ActiveRecord::Base
 					end
 				end
 		rescue
-			nil
+			puts "RESCUED"
 		end
 	end
 
@@ -112,7 +75,6 @@ class Coinpair < ActiveRecord::Base
 			ask_price_with_fees = asks[0].price + asks[0].coinpair.exchange.buy_fee * asks[0].price
 			bid_price_with_fees = bids[-1].price - bids[-1].coinpair.exchange.sell_fee * bids[-1].price
 			arbitrage_price = ask_price_with_fees < bid_price_with_fees
-
 			if ask_quantity >= bid_quantity && arbitrage_price
 				profit = bid_price_with_fees * bid_quantity - ask_price_with_fees * bid_quantity
 				order_array << [bid_quantity, asks[0].price, profit]

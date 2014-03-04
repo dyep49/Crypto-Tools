@@ -4,6 +4,7 @@ class CreateCoinpairs < ActiveRecord::Migration
       t.string :primary
       t.string :secondary
       t.integer :exchange_id
+      t.integer :market_id
       t.timestamps
     end
   end

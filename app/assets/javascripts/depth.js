@@ -181,9 +181,11 @@ var RenderDepth = function(){
 					.call(yAxis)
 				graph.select('#bid')
 					.duration(750)
+        	.datum(self.buy_data_array)
 	        .attr("d", area)
 	      graph.select('#ask')
 					.duration(750)
+        	.datum(self.buy_data_array)
 	        .attr("d", area)
 
 
