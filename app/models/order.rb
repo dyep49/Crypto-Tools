@@ -13,9 +13,14 @@ class Order < ActiveRecord::Base
 		response = cryptsy.orderdata["return"].values
 		response.each do |coinpair|
 			marketid = coinpair["marketid"].to_i
-			primary = coinpair["primarycode"]
-			secondary = coinpair["secondarycode"]
-			new_coin_pair = Coinpair.create(primary: primary, secondary: secondary, market_id: marketid)
+			new_coin_pair = Coinpair.where(market_id: marketid)
+			if new_coin_pair.any?
+				new_coin_pair = new_coin_pair.first
+			else
+				primary = coinpair["primarycode"]
+				secondary = coinpair["secondarycode"]
+				new_coin_pair = Coinpair.create(primary: primary, secondary: secondary, market_id: marketid)
+			end
 			sells = coinpair["sellorders"]
 			sells.each do |sell|
 				type = "sell"
@@ -46,7 +51,12 @@ class Order < ActiveRecord::Base
 			code = pair.scan(/[a-z]+/)
 			primary = code[0].upcase
 			secondary = code[1].upcase
-			new_coin_pair = Coinpair.create(primary: primary, secondary: secondary)
+			new_coin_pair = Coinpair.where(primary: primary).where(secondary: secondary).where(exchange_id: bter.id)
+			if new_coin_pair.any?
+				new_coin_pair = new_coin_pair.first
+			else
+				new_coin_pair = Coinpair.create(primary: primary, secondary: secondary)
+			end
 			depth = HTTParty.get('http://data.bter.com/api/1/depth/' + primary + '_' + secondary)
 			depth["asks"].each do |ask|
 				type = "sell"
@@ -73,7 +83,12 @@ class Order < ActiveRecord::Base
 			code = pair.scan(/[a-z]+/)
 			primary = code[0].upcase
 			secondary = code[1].upcase
-			new_coin_pair = Coinpair.create(primary: primary, secondary: secondary)
+			new_coin_pair = Coinpair.where(primary: primary).where(secondary: secondary).where(exchange_id: btce.id)
+			if new_coin_pair.any?
+				new_coin_pair = new_coin_pair.first
+			else
+				new_coin_pair = Coinpair.create(primary: primary, secondary: secondary)
+			end
 			depth = Btce::Depth.new(pair).json[pair]
 			depth["asks"].each do |ask|
 				type = "sell"
