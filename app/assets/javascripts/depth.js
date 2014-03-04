@@ -44,7 +44,7 @@ var RenderDepth = function(){
 	}
 
 	this.renderGraphs = function(){
-		var margin = {top: 20, right: 10, bottom: 20, left: 90};
+		var margin = {top: 20, right: 40, bottom: 20, left: 90};
 		var width = 960 - margin.left - margin.right
 		var height = 500 - margin.top - margin.bottom;
 
@@ -102,14 +102,14 @@ var RenderDepth = function(){
 			.y(function(d){return y(d.quantity)})
 
 
-    svg.append("path")
+    var bid_fill = svg.append("path")
         .datum(self.buy_data_array)
         .attr("class", "bid")
         .attr("d", area)
         .style('fill', 'green')
         .style('opacity', 0.8)
 
-    svg.append("path")
+    var ask_fill = svg.append("path")
         .datum(self.sell_data_array)
         .attr("class", "ask")
         .attr("d", area)
@@ -179,14 +179,19 @@ var RenderDepth = function(){
 				graph.select(".y.axis")
 					.duration(750)
 					.call(yAxis)
-				graph.select('#bid')
-					.duration(750)
-        	.datum(self.buy_data_array)
-	        .attr("d", area)
-	      graph.select('#ask')
-					.duration(750)
-        	.datum(self.buy_data_array)
-	        .attr("d", area)
+
+					
+				// graph.select('#bid')
+				// 	.duration(750)
+    //     	.datum(self.buy_data_array)
+	   //      .attr("d", area)
+	   //    graph.select('#ask')
+				// 	.duration(750)
+    //     	.datum(self.buy_data_array)
+	   //      .attr("d", area)
+
+	  		bid_fill.transition().attr("d", area(self.buy_data_array))
+	  		ask_fill.transition().attr("d", area(self.sell_data_array))
 
 
 

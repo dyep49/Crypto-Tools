@@ -9,7 +9,7 @@ class Coinpair < ActiveRecord::Base
 
 
 	def arbitrage
-		# begin
+		begin
 			matches = Coinpair.where(primary: self.primary, secondary: self.secondary)
 				if matches.count > 1
 #---------------------------------------------------------------------------------------------------------------------
@@ -64,9 +64,9 @@ class Coinpair < ActiveRecord::Base
 						end
 					end
 				end
-		# rescue
-			# puts "RESCUED"
-		# end
+		rescue
+			puts "RESCUED"
+		end
 	end
 
 	def self.arbitrage_recursion(bids, asks, order_array)

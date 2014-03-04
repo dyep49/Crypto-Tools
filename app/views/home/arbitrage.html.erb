@@ -14,10 +14,10 @@
 				<td><%= pair.buy_exchange.name.capitalize %></td>
 				<td><%= pair.sell_exchange.name.capitalize %></td>
 				<td><%= pair.primary %>/<%= pair.secondary %></td>
-				<td><%= pair.quantity %></td>
-				<td><%= pair.highest_bid %></td>
-				<td><%= pair.lowest_ask %></td>
-				<td><%= pair.profit %> <%= pair.secondary %></td>
+				<td><%= pair.quantity.round(8) %></td>
+				<td><%= pair.highest_bid.round(8) %></td>
+				<td><%= pair.lowest_ask.round(8) %></td>
+				<td><%= pair.profit.round(8) %> <%= pair.secondary %></td>
 			</tr>
 		<% end %>
 	</tbody>
