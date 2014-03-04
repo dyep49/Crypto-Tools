@@ -135,7 +135,7 @@ var RenderDepth = function(){
 			.attr('class', 'y axis')
 			.call(yAxis)
 
-		svg.append("g")			
+		var x_grid = svg.append("g")			
 	    .attr("class", "grid")
 	    .attr("transform", "translate(0," + height + ")")
 	    .call(make_x_axis()
@@ -143,7 +143,7 @@ var RenderDepth = function(){
 	        .tickFormat("")
     )
 
-    svg.append("g")			
+    var y_grid = svg.append("g")			
         .attr("class", "grid")
         .call(make_y_axis()
             .tickSize(-width, 0, 0)
@@ -182,15 +182,21 @@ var RenderDepth = function(){
 					.duration(750)
 					.call(yAxis)
 
-					
-				// graph.select('#bid')
-				// 	.duration(750)
-    //     	.datum(self.buy_data_array)
-	   //      .attr("d", area)
-	   //    graph.select('#ask')
-				// 	.duration(750)
-    //     	.datum(self.buy_data_array)
-	   //      .attr("d", area)
+
+				x_grid			
+		    .attr("class", "grid")
+		    .attr("transform", "translate(0," + height + ")")
+		    .call(make_x_axis()
+		        .tickSize(-height, 0, 0)
+		        .tickFormat("")
+	    	)
+
+    	y_grid			
+      .attr("class", "grid")
+      .call(make_y_axis()
+          .tickSize(-width, 0, 0)
+          .tickFormat("")
+      )	
 
 	  		bid_fill.transition().attr("d", area(self.buy_data_array))
 	  		ask_fill.transition().attr("d", area(self.sell_data_array))
