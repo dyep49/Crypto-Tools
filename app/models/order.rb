@@ -11,6 +11,7 @@ class Order < ActiveRecord::Base
 		exchange = Exchange.where(name: 'cryptsy').first
 		cryptsy = Cryptsy::API::Client.new(ENV["CRYPTSY_PUBLIC_KEY"], ENV["CRYPTSY_PRIVATE_KEY"])
 		response = cryptsy.orderdata["return"].values
+		markets = cryptsy.marketdata["return"]["markets"]
 		response.each do |coinpair|
 			marketid = coinpair["marketid"].to_i
 			new_coin_pair = Coinpair.where(market_id: marketid)
@@ -19,7 +20,12 @@ class Order < ActiveRecord::Base
 			else
 				primary = coinpair["primarycode"]
 				secondary = coinpair["secondarycode"]
-				new_coin_pair = Coinpair.create(primary: primary, secondary: secondary, market_id: marketid)
+				market = markets[primary]
+				last_trade_time = market["lasttradetime"]
+				last_trade = market["lasttradeprice"].to_f
+				volume = market["volume"].to_f
+
+				new_coin_pair = Coinpair.create(primary: primary, secondary: secondary, market_id: marketid, last_trade: last_trade, volume: volume, last_trade_time: last_trade_time)
 			end
 			sells = coinpair["sellorders"]
 			sells.each do |sell|

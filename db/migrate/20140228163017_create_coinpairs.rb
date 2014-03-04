@@ -5,6 +5,9 @@ class CreateCoinpairs < ActiveRecord::Migration
       t.string :secondary
       t.integer :exchange_id
       t.integer :market_id
+      t.float :last_trade
+      t.float :volume
+      t.datetime :last_trade_time
       t.timestamps
     end
   end

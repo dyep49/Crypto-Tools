@@ -44,3 +44,7 @@ svg{
 .grid path {
     stroke-width: 0;
 }
+
+h1{
+	text-align: center;
+}

@@ -1,6 +1,59 @@
 <script>
 $(document).ready(function(){
-	test = new RenderHistory();
-	test.fetchTrades();
+  $("#pairs").tablesorter({cssAsc: "headerSortUp", cssDesc: "headerSortDown", cssHeader: "header"});
+	
+
+	// $.getJSON('/', function(data){
+	// 	console.log("Success");
+	// 	fetchBtcPairs(data);
+	// 	$.each(pairArray, function(index, pair){
+	// 		pair.setDoubleWall();
+	// 	});
+	// })
+	// 	.fail(function(){
+	// 		console.log("fetching failed")
+	// 	})
+
+	$.getJSON('/static_pump', function(data){
+		console.log("Success");
+		fetchBtcPairs(data);
+		$.each(pairArray, function(index, pair){
+			pair.setDoubleWall();
+		});
+	})
+		.fail(function(){
+			console.log("fetching failed")
+		})
+
 })
 </script>
+
+<h1>Crypto Pumps</h1>
+
+<p id="progress">Initializing...</p>
+<div class="progress progress-striped active">
+  <div class="progress-bar"  role="progressbar" style="width: 0%">
+    <span class="sr-only">45% Complete</span>
+  </div>
+</div>
+
+<p>Click on column heads to sort</p>
+
+<div class = "table-responsive">
+<table id = "pairs" class = "table table-striped table-hover">
+	<thead>
+		<tr>
+			<th>Coin</th>
+			<th>Pair</th>	
+			<th>Estimated BTC Volume</th>
+			<th>Last Trade</th>
+			<th>BTC to 100%</th>
+			<th>BTC to 125%</th>
+			<th>BTC to 150%</th>
+			<th>BTC to 200%</th>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+</div>

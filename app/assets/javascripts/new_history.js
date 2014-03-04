@@ -33,7 +33,7 @@ var RenderHistory = function(){
 
 	this.fetchTrades = function(){
 		$.ajax({
-		url: '/',
+		url: '/history',
 		dataType: 'json',
 		success: function(d){
 			// alert('got the data')
@@ -150,7 +150,7 @@ var RenderHistory = function(){
 			.attr('y2', function(d){return y(d.min)})
 			.attr('stroke', 'black')
 
-    svg.append("g")			
+    var x_grid = svg.append("g")			
 	    .attr("class", "grid")
 	    .attr("transform", "translate(0," + height + ")")
 	    .call(make_x_axis()
@@ -158,7 +158,7 @@ var RenderHistory = function(){
 	        .tickFormat("")
     )
 
-    svg.append("g")			
+    var y_grid = svg.append("g")			
         .attr("class", "grid")
         .call(make_y_axis()
             .tickSize(-width, 0, 0)
@@ -203,6 +203,22 @@ var RenderHistory = function(){
 		graph.select(".y.axis")
 			.duration(750)
 			.call(yAxis)
+
+		x_grid
+	    .attr("class", "grid")
+	    .attr("transform", "translate(0," + height + ")")
+	    .call(make_x_axis()
+	        .tickSize(-height, 0, 0)
+	        .tickFormat("")
+	    )
+
+    y_grid			
+	    .attr("class", "grid")
+	    .call(make_y_axis()
+        .tickSize(-width, 0, 0)
+        .tickFormat("")
+    )	
+
 	}
 
 		setInterval(function(){

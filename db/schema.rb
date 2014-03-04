@@ -21,6 +21,9 @@ ActiveRecord::Schema.define(version: 20140303230933) do
     t.string   "secondary"
     t.integer  "exchange_id"
     t.integer  "market_id"
+    t.float    "last_trade"
+    t.float    "volume"
+    t.datetime "last_trade_time"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

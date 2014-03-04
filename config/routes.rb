@@ -1,8 +1,11 @@
 CryptoTools::Application.routes.draw do
 
   root 'home#index'
-  get 'depth' => 'home#depth'
+  get 'history' => 'home#history'
+  get 'depth_table' => 'home#depth_table'
   get 'arbitrage' => 'home#arbitrage'
+  get 'static_pump' => 'home#static_pump'
+  get 'static_depth' => 'home#static_depth'
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
