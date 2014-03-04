@@ -31,7 +31,6 @@ class HomeController < ApplicationController
 
 	def arbitrage
 		@arbitrage = ArbitragePair.find_arbitrage
-		binding.pry
 	end
 
 
