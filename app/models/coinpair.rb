@@ -9,12 +9,13 @@ class Coinpair < ActiveRecord::Base
 
 
 	def arbitrage
-		begin
+		# begin
 			matches = Coinpair.where(primary: self.primary, secondary: self.secondary)
 				if matches.count > 1
 #---------------------------------------------------------------------------------------------------------------------
 
 					bid_max_pair = matches.max_by do |match| 
+						# binding.pry
 						price = match.orders.where(order_type:'buy').first.price
 						price_with_fees = price - match.exchange.sell_fee * price
 					end
@@ -55,17 +56,17 @@ class Coinpair < ActiveRecord::Base
 						order_array = []
 						arbitrage_array = Coinpair.arbitrage_recursion(cloned_bids, cloned_asks, order_array)
 						if arbitrage_array.count >= 1
-							buy_at = Exchange.find(ask_min_pair.exchange_id)
-							sell_at = Exchange.find(bid_max_pair.exchange_id)
+							buy_at = ask_min_pair.exchange
+							sell_at = bid_max_pair.exchange
 							quantity = arbitrage_array.inject(0){|sum, order| sum += order[0]}
 							profit = arbitrage_array.inject(0){|sum, order| sum += order[2]}
 							ArbitragePair.new(buy_exchange: buy_at, sell_exchange: sell_at, primary:self.primary, secondary:self.secondary, lowest_ask: ask_min_order.price, highest_bid: bid_max_order.price, quantity: quantity, profit: profit)
 						end
 					end
 				end
-		rescue
-			puts "RESCUED"
-		end
+		# rescue
+			# puts "RESCUED"
+		# end
 	end
 
 	def self.arbitrage_recursion(bids, asks, order_array)
