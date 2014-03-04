@@ -12,9 +12,10 @@ class Order < ActiveRecord::Base
 		cryptsy = Cryptsy::API::Client.new(ENV["CRYPTSY_PUBLIC_KEY"], ENV["CRYPTSY_PRIVATE_KEY"])
 		response = cryptsy.orderdata["return"].values
 		response.each do |coinpair|
+			marketid = coinpair["marketid"].to_i
 			primary = coinpair["primarycode"]
 			secondary = coinpair["secondarycode"]
-			new_coin_pair = Coinpair.create(primary: primary, secondary: secondary)
+			new_coin_pair = Coinpair.create(primary: primary, secondary: secondary, market_id: marketid)
 			sells = coinpair["sellorders"]
 			sells.each do |sell|
 				type = "sell"
