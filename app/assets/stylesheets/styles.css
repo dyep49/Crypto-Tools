@@ -19,6 +19,28 @@
 	fill: none;
 }
 
+#blue {
+	stroke: blue;
+	stroke-width: 2;
+	fill: none;
+
+
+}
+
+#orange {
+	stroke: orange;
+	stroke-width: 2;
+	fill: none;
+
+}
+
+#purple {
+	stroke: purple;
+	stroke-width: 2;
+	fill: none;
+
+}
+
 /*path { 
     stroke: steelblue;
     stroke-width: 2;
@@ -57,7 +79,7 @@ h1{
 
 .table-scroll{
 	max-height: 400px;
-	width: 100%;
+	/*width: 100%;*/
 	overflow: auto;
 	/*overflow-x: hidden;*/
 }
@@ -69,3 +91,17 @@ h1{
 h2 {
 	text-align: center;
 }
+
+.twitter-timeline{
+	width: 300px;
+	height: 500px;
+}
+
+td {
+	text-align: center;
+}
+
+.navbar-brand{
+	font-weight: bold;
+}
+

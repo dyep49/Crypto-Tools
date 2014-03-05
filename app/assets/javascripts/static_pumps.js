@@ -58,12 +58,13 @@ var BtcPair = function(){
 		newRow = $('<tr></tr>');
 		newRow.append('<td>' + self.name + '</td>');
 		newRow.append('<td>' + self.label + '</td>');
-		newRow.append('<td>' + (self.volume * self.lastTradePrice) + '</td>');
+		newRow.append('<td>' + (self.volume * self.lastTradePrice).toFixed(5) + '</td>');
 		newRow.append('<td>' + self.lastTradePrice.noExponents() + '</td>');
-		newRow.append('<td>' + self.doubleWall + '</td>');
-		newRow.append('<td>' + self.secondWall + '</td>');
-		newRow.append('<td>' + self.thirdWall + '</td>');
-		newRow.append('<td>' + self.fourthWall + '</td>');
+		newRow.append('<td>' + self.halfWall.toFixed(5) + '</td>');
+		newRow.append('<td>' + self.doubleWall.toFixed(5) + '</td>');
+		newRow.append('<td>' + self.secondWall.toFixed(5) + '</td>');
+		newRow.append('<td>' + self.thirdWall.toFixed(5) + '</td>');
+		newRow.append('<td>' + self.fourthWall.toFixed(5) + '</td>');
 		newRow.hide().appendTo('#resistance-tbody').fadeIn(1000)
 		newRow.click(function(){
 			params = self.pairId
@@ -110,16 +111,8 @@ var BtcPair = function(){
 					$('#show-line').show()
 					clearInterval(history_interval)
 			})
-
-
-
-
-
 		})
-		// load_width += ((1 / pairArray.length) * 100);
-		// iteration += 1;
-		// $('.progress-bar').css('width', load_width + '%' );
-		// $('#progress').text("Rendered " + iteration + " of " + pairArray.length);
+
 		$("#pairs").trigger("update");
 	};
 
@@ -127,14 +120,23 @@ var BtcPair = function(){
 	this.setDoubleWall = function(){
 		$.getJSON('/static_depth', {'pairId': self.pairId}, function(data){
 			var data = data
+			var halfIndex;
 			var doubleIndex;
 			var secondIndex;
 			var thirdIndex;
 			var fourthIndex;
+			var halfSellArray =[];
 			var doubleSellArray = [];
 			var secondSellArray = [];
 			var thirdSellArray = [];
 			var fourthSellArray = [];
+
+			$.each(data, function(index, order){
+				if (order.price > (self.lastTradePrice * 1.5)){
+					halfIndex = index;
+					return false;
+				}
+			});
 
 			$.each(data, function(index, order){
 				if (order.price > (self.lastTradePrice * 2)){
@@ -164,6 +166,11 @@ var BtcPair = function(){
 				}
 			});
 
+			$.each(data.slice(0,halfIndex), function(index, order){
+				var total = order.price * order.quantity;
+				halfSellArray.push(total);
+			});
+
 			$.each(data.slice(0,doubleIndex), function(index, order){
 				var total = order.price * order.quantity;
 				doubleSellArray.push(total);
@@ -184,6 +191,7 @@ var BtcPair = function(){
 				fourthSellArray.push(total);
 			});
 
+			self.halfWall = _.reduce(halfSellArray, function(memo, num){return memo + num;}, 0);
 			self.doubleWall = _.reduce(doubleSellArray, function(memo, num){return memo + num;}, 0);
 			self.secondWall = _.reduce(secondSellArray, function(memo, num){return memo + num;}, 0);
 			self.thirdWall = _.reduce(thirdSellArray, function(memo, num){return memo + num;}, 0);
