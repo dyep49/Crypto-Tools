@@ -56,11 +56,13 @@ ActiveRecord::Schema.define(version: 20140304191007) do
   end
 
   create_table "orders", force: true do |t|
-    t.integer "coinpair_id"
-    t.string  "order_type"
-    t.float   "quantity"
-    t.float   "price"
-    t.float   "total"
+    t.integer  "coinpair_id"
+    t.string   "order_type"
+    t.float    "quantity"
+    t.float    "price"
+    t.float    "total"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "trades", force: true do |t|

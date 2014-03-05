@@ -9,7 +9,6 @@ class CreateArbitrages < ActiveRecord::Migration
       t.float :profit
       t.float :lowest_ask
       t.float :highest_bid
-
       t.timestamps
     end
   end

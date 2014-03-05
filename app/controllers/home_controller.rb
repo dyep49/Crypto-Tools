@@ -3,14 +3,7 @@ require 'cryptsy/api'
 class HomeController < ApplicationController
 
 	def index
-		# respond_to do |format|
-		# 	format.html
-		# 	format.json do 
-		# 		response = HTTParty.get('http://pubapi.cryptsy.com/api.php?method=marketdatav2')
-		# 		binding.pry
-		# 		render json: response.to_json
-		# 	end
-		# end
+		@updated_at = Order.order(updated_at: :desc).first.updated_at
 	end
 
 	def static_pump

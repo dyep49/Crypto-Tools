@@ -77,13 +77,7 @@ var RenderDepth = function(){
 	        .ticks(8)
 		}
 
-		var svg = d3.select('body')
-			.append('svg')
-	    .attr("width", width + margin.left + margin.right)
-	    .attr("height", height + margin.top + margin.bottom)
-		  .append("g")
-	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-		
+
 		var xAxis = d3.svg.axis()
 			.scale(x)
 			.orient("bottom")
@@ -93,6 +87,14 @@ var RenderDepth = function(){
 			.scale(y)
 			.ticks(8)
 			.orient("left");
+
+		var svg = d3.select('body')
+			.append('svg')
+	    .attr("width", width + margin.left + margin.right)
+	    .attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
 
 		var	area = d3.svg.area()
 	    .x(function(d) { return x(d.price);})
@@ -150,12 +152,22 @@ var RenderDepth = function(){
             .tickFormat("")
         )	
 
+
+
 		// svg.call(d3.behavior.zoom()
+		// 	.translate([100,50]).scale(.5)
   // 		.on("zoom", function() {
   // 		console.log(d3.event.translate[0])
   //   	svg.attr("transform", "translate(" + d3.event.translate[0] + "," + d3.event.translate[1] + ") scale(" + d3.event.scale + ")")
   // 		})
 		// )
+
+
+
+
+
+
+
 		var updateGraph = function(){
 			console.log('updating')
 			self.getData(function(){

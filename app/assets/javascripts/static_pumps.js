@@ -54,10 +54,30 @@ var BtcPair = function(){
 		newRow.append('<td>' + self.thirdWall + '</td>');
 		newRow.append('<td>' + self.fourthWall + '</td>');
 		newRow.hide().appendTo('tbody').fadeIn(1000)
-		load_width += ((1 / pairArray.length) * 100);
-		iteration += 1;
-		$('.progress-bar').css('width', load_width + '%' );
-		$('#progress').text("Rendered " + iteration + " of " + pairArray.length);
+		newRow.click(function(){
+			params = self.pairId
+			render = new RenderDepth();
+			$('tbody > tr').fadeOut(3000)
+			$('#sort-text').fadeOut(3000)
+			$('h1').fadeOut(3500)
+			setTimeout(function(){
+				$('tbody > tr').remove()
+				$('#sort-text').remove()
+				$('#last-update').remove()
+				$('h1').text(self.label).fadeIn(3000)
+			}, 3000)
+			setTimeout(function(){
+				self.renderTableData()
+			}, 3000)
+			setTimeout(function(){
+				render.getData(render.renderGraphs)
+				$('tr').last().unbind()
+			}, 4000)
+		})
+		// load_width += ((1 / pairArray.length) * 100);
+		// iteration += 1;
+		// $('.progress-bar').css('width', load_width + '%' );
+		// $('#progress').text("Rendered " + iteration + " of " + pairArray.length);
 		$("#pairs").trigger("update");
 	};
 
