@@ -15,7 +15,7 @@ $(document).ready(function(){
 	$('.arbitrage').hide()
 	$('#arbitrage-li').click(function(){
 		$('.content').hide()
-		$('.arbitrage').show()
+		$('.arbitrage').fadeIn(1000).show()
 	})
 
 })

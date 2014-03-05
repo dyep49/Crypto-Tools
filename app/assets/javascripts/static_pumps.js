@@ -87,6 +87,28 @@ var BtcPair = function(){
 				$('tr').last().unbind()
 			}, 4000)
 
+			$('.content').append('<a id="show-line" href="#">Show Line Graph/Candlesticks</a>')
+			$('.content').append('<a id="show-depth" href="#">Show Depth Chart</a>')
+			$('#show-depth').hide()
+
+			$('#show-line').click(function(){
+				$('svg').remove()
+				$('#show-depth').show()
+				$('#show-line').hide()
+				history = new RenderHistory();
+				history.fetchTrades();
+				clearInterval(depth_interval);
+			})
+
+			$('#show-depth').click(function(){
+					$('svg').remove()
+					depth = new RenderDepth();
+					depth.getData(depth.renderGraphs)
+					$('#show-depth').hide()
+					$('show-line').show()
+					clearInterval(history_interval)
+			})
+
 
 
 

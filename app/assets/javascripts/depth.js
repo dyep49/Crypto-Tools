@@ -169,7 +169,7 @@ var RenderDepth = function(){
 
 
 		var updateGraph = function(){
-			console.log('updating')
+			console.log('UPDATING DEPTH')
 			self.getData(function(){
 				var updated_x_min = d3.min(self.buy_data_array, function(order){return order.price})
 				var updated_x_max = d3.max(self.sell_data_array, function(order){return order.price})
@@ -219,7 +219,7 @@ var RenderDepth = function(){
 			
 		}
 
-		setInterval(function(){
+		depth_interval = setInterval(function(){
 			updateGraph()
 		}, 5000)
 

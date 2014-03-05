@@ -173,7 +173,7 @@ var RenderHistory = function(){
   // 		})
 		// )
 	var updateGraph = function(){
-		console.log('updating')
+		console.log('UPDATING HISTORY')
 		var updated_min_x = d3.min(self.candlestick_history, function(d){return d.open_datetime})
 		var updated_max_x = new Date()
 
@@ -222,7 +222,7 @@ var RenderHistory = function(){
 
 	}
 
-		setInterval(function(){
+		history_interval = setInterval(function(){
 			updateGraph()
 		}, 5000)
 
