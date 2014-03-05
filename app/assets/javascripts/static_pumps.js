@@ -35,6 +35,17 @@ function fetchBtcPairs(pairs){
 			newPair.volume = pair.volume
 			pairArray.push(newPair)
 	});
+
+	$('.navbar-brand').click(function(){
+			location.reload()
+	})
+
+	$('#home').click(function(){
+			location.reload()
+	})
+
+
+
 }
 
 //Creating a constructor
@@ -53,16 +64,16 @@ var BtcPair = function(){
 		newRow.append('<td>' + self.secondWall + '</td>');
 		newRow.append('<td>' + self.thirdWall + '</td>');
 		newRow.append('<td>' + self.fourthWall + '</td>');
-		newRow.hide().appendTo('tbody').fadeIn(1000)
+		newRow.hide().appendTo('#resistance-tbody').fadeIn(1000)
 		newRow.click(function(){
 			params = self.pairId
-			// depth = new RenderDepth();
-			history = new RenderHistory();
-			$('tbody > tr').fadeOut(3000)
+			depth = new RenderDepth();
+			// history = new RenderHistory();
+			$('#resistance-tbody > tr').fadeOut(3000)
 			$('#sort-text').fadeOut(3000)
 			$('h1').fadeOut(3500)
 			setTimeout(function(){
-				$('tbody > tr').remove()
+				$('#resistance-tbody > tr').remove()
 				$('#sort-text').remove()
 				$('#last-update').remove()
 				$('h1').text(self.label).fadeIn(3000)
@@ -71,8 +82,8 @@ var BtcPair = function(){
 				self.renderTableData()
 			}, 3000)
 			setTimeout(function(){
-				// depth.getData(depth.renderGraphs)
-				history.fetchTrades();
+				depth.getData(depth.renderGraphs)
+				// history.fetchTrades();
 				$('tr').last().unbind()
 			}, 4000)
 

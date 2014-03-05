@@ -1,32 +1,33 @@
-<script>
-$(document).ready(function(){
-  $("#pairs").tablesorter({cssAsc: "headerSortUp", cssDesc: "headerSortDown", cssHeader: "header", sortList: [[4,0]]});
-	
-
-	// $.getJSON('/', function(data){
-	// 	console.log("Success");
-	// 	fetchBtcPairs(data);
-	// 	$.each(pairArray, function(index, pair){
-	// 		pair.setDoubleWall();
-	// 	});
-	// })
-	// 	.fail(function(){
-	// 		console.log("fetching failed")
-	// 	})
-
-	$.getJSON('/static_pump', function(data){
-		console.log("Success");
-		fetchBtcPairs(data);
-		$.each(pairArray, function(index, pair){
-			pair.setDoubleWall();
-		});
-	})
-		.fail(function(){
-			console.log("fetching failed")
-		})
-
-})
-</script>
+<div class = "content-wrapper">
+<div class = "arbitrage">
+<h1>Arbitrage Opportunities</h1>
+<div class="table-responsive">
+<table id="pairs" class="table table-striped table-hover">
+	<thead>
+		<th>Buy Exchange</th>
+		<th>Sell Exchange</th>
+		<th>Pair</th>
+		<th>Quantity</th>
+		<th>Highest Bid</th>
+		<th>Lowest Ask</th>
+		<th>Profit</th>
+	</thead>
+	<tbody>
+		<% @arbitrage.each do |pair| %>
+			<tr>
+				<td><%= pair.buy_exchange.capitalize %></td>
+				<td><%= pair.sell_exchange.capitalize %></td>
+				<td><%= pair.primary %>/<%= pair.secondary %></td>
+				<td><%= pair.quantity %></td>
+				<td><%= pair.highest_bid %></td>
+				<td><%= pair.lowest_ask %></td>
+				<td><%= pair.profit %> <%= pair.secondary %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+</div>
+</div>
 
 <div class="content">
 <h1>Cryptsy Resistance Levels</h1>
@@ -56,9 +57,10 @@ $(document).ready(function(){
 			<th>BTC to 200%</th>
 		</tr>
 	</thead>
-	<tbody>
+	<tbody id="resistance-tbody">
 	</tbody>
 </table>
+</div>
 </div>
 </div>
 </div>

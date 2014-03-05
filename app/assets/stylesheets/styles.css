@@ -59,5 +59,9 @@ h1{
 	max-height: 400px;
 	width: 100%;
 	overflow: auto;
-	overflow-x: hidden;
+	/*overflow-x: hidden;*/
+}
+
+.arbitrage{
+	display: none;
 }

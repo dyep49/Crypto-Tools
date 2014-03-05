@@ -3,6 +3,7 @@ require 'cryptsy/api'
 class HomeController < ApplicationController
 
 	def index
+		@arbitrage = Arbitrage.all
 		@updated_at = Order.order(updated_at: :desc).first.updated_at
 	end
 
