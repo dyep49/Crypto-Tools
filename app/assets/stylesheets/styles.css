@@ -97,6 +97,12 @@ h2 {
 	height: 500px;
 }
 
+#wide {
+	width: 600px;
+	height: 200px;
+	margin-bottom: 10px
+}
+
 td {
 	text-align: center;
 }
@@ -105,3 +111,17 @@ td {
 	font-weight: bold;
 }
 
+#pump-graph{
+	margin: none;
+	vertical-align: top;
+}
+
+.pad {
+	margin-bottom: 25px;
+}
+
+#graph-div {
+	display: inline-block;
+	position: absolute;
+	vertical-align: top
+}

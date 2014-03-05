@@ -36,6 +36,13 @@ function fetchBtcPairs(pairs){
 			pairArray.push(newPair)
 	});
 
+
+	setTimeout(function(){
+		pump_graph = new renderResistance()
+		pump_graph.graph()
+	},4000)
+
+
 	$('.navbar-brand').click(function(){
 			location.reload()
 	})
@@ -73,6 +80,8 @@ var BtcPair = function(){
 			$('#resistance-tbody > tr').fadeOut(1000)
 			$('#sort-text').fadeOut(1000)
 			$('h1').fadeOut(1500)
+			$('.twitter-timeline').fadeOut(1000)
+			$('#graph-div').fadeOut(1000)
 			setTimeout(function(){
 				$('#resistance-tbody > tr').remove()
 				$('#sort-text').remove()

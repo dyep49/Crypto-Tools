@@ -40,9 +40,9 @@ var renderResistance = function(){
 
 
 	this.graph = function(){
-		var margin = {top: 20, right: 40, bottom: 20, left: 90};
-		var width = 960 - margin.left - margin.right
-		var height = 500 - margin.top - margin.bottom;
+		var margin = {top: 20, right: 40, bottom: 20, left: 50};
+		var width = 600 - margin.left - margin.right
+		var height = 250 - margin.top - margin.bottom;
 
 		var x_min = 0
 		var x_max = 200
