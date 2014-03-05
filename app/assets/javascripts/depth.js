@@ -221,6 +221,16 @@ var RenderDepth = function(){
 
 		depth_interval = setInterval(function(){
 			updateGraph()
+			$.getJSON('/last_price', {pair_id: params}, function(d){
+				previous = $('.last-price').text()
+				$('.last-price').text(d)
+				if(previous > d){
+					$('.last-price').css('color', 'red')
+				} else{
+					$('.last-price').css('color', 'green')
+				}
+			})
+
 		}, 5000)
 
 

@@ -69,26 +69,28 @@ var BtcPair = function(){
 			params = self.pairId
 			depth = new RenderDepth();
 			// history = new RenderHistory();
-			$('#resistance-tbody > tr').fadeOut(3000)
-			$('#sort-text').fadeOut(3000)
-			$('h1').fadeOut(3500)
+			$('#resistance-tbody > tr').fadeOut(1000)
+			$('#sort-text').fadeOut(1000)
+			$('h1').fadeOut(1500)
 			setTimeout(function(){
 				$('#resistance-tbody > tr').remove()
 				$('#sort-text').remove()
 				$('#last-update').remove()
-				$('h1').text(self.label).fadeIn(3000)
-			}, 3000)
+				$('h1').text(self.label).fadeIn(1000)
+			}, 1000)
 			setTimeout(function(){
 				self.renderTableData()
-			}, 3000)
+			}, 1000)
 			setTimeout(function(){
 				depth.getData(depth.renderGraphs)
 				// history.fetchTrades();
 				$('tr').last().unbind()
-			}, 4000)
+			}, 2000)
 
 			$('.content').append('<a id="show-line" href="#">Show Line Graph/Candlesticks</a>')
 			$('.content').append('<a id="show-depth" href="#">Show Depth Chart</a>')
+			$('.content').append('<h2>Last Trade:</h2>')
+			$('.content').append('<h2 class="last-price"</h2>')
 			$('#show-depth').hide()
 
 			$('#show-line').click(function(){
@@ -105,7 +107,7 @@ var BtcPair = function(){
 					depth = new RenderDepth();
 					depth.getData(depth.renderGraphs)
 					$('#show-depth').hide()
-					$('show-line').show()
+					$('#show-line').show()
 					clearInterval(history_interval)
 			})
 

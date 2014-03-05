@@ -8,6 +8,7 @@ CryptoTools::Application.routes.draw do
   get 'static_depth' => 'home#static_depth'
   get 'depth/:pair_id' => 'home#depth'
   get 'grab_depth' => 'home#grab_depth'
+  get 'last_price' => 'home#last_price'
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

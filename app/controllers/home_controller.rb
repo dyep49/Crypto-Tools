@@ -55,10 +55,6 @@ class HomeController < ApplicationController
 		end
 	end
 
-	def depth
-		@pair_id = params["pair_id"]
-	end
-
 	def grab_depth
 		pair_id = params["pair_id"]
 		cryptsy = Cryptsy::API::Client.new(ENV["CRYPTSY_PUBLIC_KEY"], ENV["CRYPTSY_PRIVATE_KEY"])
@@ -75,6 +71,18 @@ class HomeController < ApplicationController
 
 	def arbitrage
 		@arbitrage = Arbitrage.all
+	end
+
+	def last_price
+		cryptsy = Cryptsy::API::Client.new(ENV["CRYPTSY_PUBLIC_KEY"], ENV["CRYPTSY_PRIVATE_KEY"])
+		respond_to do |format|
+			format.html
+			format.json do 
+				response = cryptsy.marketdata(params["pair_id"])
+				parsed_response = response["return"]["markets"].values[0]["lasttradeprice"].to_f
+				render json: parsed_response.to_json
+			end
+		end
 	end
 
 
