@@ -56,7 +56,8 @@ var BtcPair = function(){
 		newRow.hide().appendTo('tbody').fadeIn(1000)
 		newRow.click(function(){
 			params = self.pairId
-			render = new RenderDepth();
+			// depth = new RenderDepth();
+			history = new RenderHistory();
 			$('tbody > tr').fadeOut(3000)
 			$('#sort-text').fadeOut(3000)
 			$('h1').fadeOut(3500)
@@ -70,9 +71,15 @@ var BtcPair = function(){
 				self.renderTableData()
 			}, 3000)
 			setTimeout(function(){
-				render.getData(render.renderGraphs)
+				// depth.getData(depth.renderGraphs)
+				history.fetchTrades();
 				$('tr').last().unbind()
 			}, 4000)
+
+
+
+
+
 		})
 		// load_width += ((1 / pairArray.length) * 100);
 		// iteration += 1;

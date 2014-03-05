@@ -35,6 +35,7 @@ var RenderHistory = function(){
 		$.ajax({
 		url: '/history',
 		dataType: 'json',
+		data: {pairId: params},
 		success: function(d){
 			// alert('got the data')
 			self.populate_line_array(d)
